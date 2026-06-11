@@ -123,18 +123,11 @@ print("19. iis.log (IIS)")
 choice = input()
 match choice:
     case "1":
-        patterns = [
-    # Failed password attempts (user and IP)
-    r'Failed password for (\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})',
-    
-    # Failed attempts with "invalid user" prefix
-    r'(?:invalid user )?(\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})',
-    
-    # Extract only IP from failed attempts
-    r'from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})',
-    
-    # Successful logins (user and IP)
-    r'Accepted password for (\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'
+        compiled_patterns = [
+    re.compile(r'Failed password for (\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'),
+    re.compile(r'(?:invalid user )?(\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'),
+    re.compile(r'from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'),
+    re.compile(r'Accepted password for (\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})')
 ]
         print("You selected auth.log (SSH/Linux)")
         # Parse SSH auth log for failed/successful logins
