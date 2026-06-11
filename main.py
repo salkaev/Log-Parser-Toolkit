@@ -120,11 +120,29 @@ print("16. sysmon.log)")
 print("17. suricata.log)")
 print("18. docker.log)")
 print("19. iis.log (IIS)")
-print("What is the name of your log?")
+choice = input()
 match choice:
     case "1":
+        patterns = [
+    # Failed password attempts (user and IP)
+    r'Failed password for (\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})',
+    
+    # Failed attempts with "invalid user" prefix
+    r'(?:invalid user )?(\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})',
+    
+    # Extract only IP from failed attempts
+    r'from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})',
+    
+    # Successful logins (user and IP)
+    r'Accepted password for (\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'
+]
         print("You selected auth.log (SSH/Linux)")
         # Parse SSH auth log for failed/successful logins
+        print("Write a full file path")
+        log_file_path = input().strip()
+        with open(log_file_path,"r") as file:
+            for line in file:
+
     case "2":
         print("You selected access.log (Apache)")
         # Parse Apache access log for HTTP methods, URLs, status codes
@@ -183,16 +201,15 @@ match choice:
         print("Error: Invalid choice! Please enter a number from 1 to 19.")
 
 
-
 # Converting EVTX to JSON
-with Evtx('evtx.evtx') as evtx:
-    events = []
-    for record in evtx.records():
-        events.append(record.xml())
+#with Evtx('evtx.evtx') as evtx:
+#    events = []
+#    for record in evtx.records():
+#        events.append(record.xml())
 
-with open('events.json', 'w', encoding='utf-8') as f:
-    json.dump(events, f, indent=2, ensure_ascii=False)
-
+#with open('events.json', 'w', encoding='utf-8') as f:
+#    json.dump(events, f, indent=2, ensure_ascii=False)
+#
 # Reading JSON and finding the event ID
-with open('events.json', 'r', encoding='utf-8') as f:
-    events = json.load(f)
+#with open('events.json', 'r', encoding='utf-8') as f:
+#    events = json.load(f)

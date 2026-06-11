@@ -1,0 +1,51 @@
+Jun 11 14:00:01 kali sshd[1001]: Invalid user admin from 185.143.22.10 port 50121
+Jun 11 14:00:02 kali sshd[1001]: Failed password for invalid user admin from 185.143.22.10 port 50121 ssh2
+Jun 11 14:00:04 kali sshd[1002]: Failed password for root from 185.143.22.10 port 50122 ssh2
+Jun 11 14:00:06 kali sshd[1003]: Failed password for root from 185.143.22.10 port 50123 ssh2
+Jun 11 14:00:08 kali sshd[1004]: Failed password for root from 185.143.22.10 port 50124 ssh2
+Jun 11 14:00:10 kali sshd[1005]: Failed password for root from 185.143.22.10 port 50125 ssh2
+Jun 11 14:00:12 kali sshd[1006]: Failed password for root from 185.143.22.10 port 50126 ssh2
+Jun 11 14:01:01 kali sshd[1010]: Invalid user oracle from 91.204.44.8 port 60211
+Jun 11 14:01:02 kali sshd[1010]: Failed password for invalid user oracle from 91.204.44.8 port 60211 ssh2
+Jun 11 14:01:04 kali sshd[1011]: Failed password for invalid user oracle from 91.204.44.8 port 60215 ssh2
+Jun 11 14:01:06 kali sshd[1012]: Failed password for invalid user oracle from 91.204.44.8 port 60218 ssh2
+Jun 11 14:01:08 kali sshd[1013]: Failed password for invalid user oracle from 91.204.44.8 port 60221 ssh2
+Jun 11 14:01:10 kali sshd[1014]: Failed password for invalid user oracle from 91.204.44.8 port 60225 ssh2
+Jun 11 14:02:15 kali sshd[1020]: Accepted password for ilya from 192.168.1.15 port 53321 ssh2
+Jun 11 14:02:15 kali sshd[1020]: pam_unix(sshd:session): session opened for user ilya(uid=1000) by (uid=0)
+Jun 11 14:05:43 kali sshd[1020]: pam_unix(sshd:session): session closed for user ilya
+Jun 11 14:06:01 kali sudo: ilya : TTY=pts/0 ; PWD=/home/ilya ; USER=root ; COMMAND=/usr/bin/apt update
+Jun 11 14:06:01 kali sudo: pam_unix(sudo:session): session opened for user root(uid=0) by ilya(uid=1000)
+Jun 11 14:06:20 kali sudo: pam_unix(sudo:session): session closed for user root
+Jun 11 14:07:01 kali sshd[1030]: Invalid user test from 45.88.77.201 port 45001
+Jun 11 14:07:02 kali sshd[1030]: Failed password for invalid user test from 45.88.77.201 port 45001 ssh2
+Jun 11 14:07:04 kali sshd[1031]: Failed password for invalid user test from 45.88.77.201 port 45004 ssh2
+Jun 11 14:07:06 kali sshd[1032]: Failed password for invalid user test from 45.88.77.201 port 45008 ssh2
+Jun 11 14:07:08 kali sshd[1033]: Failed password for invalid user test from 45.88.77.201 port 45012 ssh2
+Jun 11 14:07:10 kali sshd[1034]: Failed password for invalid user test from 45.88.77.201 port 45016 ssh2
+Jun 11 14:07:12 kali sshd[1035]: Failed password for invalid user test from 45.88.77.201 port 45020 ssh2
+Jun 11 14:10:11 kali sshd[1040]: Accepted password for student from 192.168.1.33 port 44111 ssh2
+Jun 11 14:10:11 kali sshd[1040]: pam_unix(sshd:session): session opened for user student(uid=1001) by (uid=0)
+Jun 11 14:12:47 kali sshd[1040]: pam_unix(sshd:session): session closed for user student
+Jun 11 14:13:01 kali sshd[1050]: Failed password for root from 103.91.211.12 port 60100 ssh2
+Jun 11 14:13:03 kali sshd[1051]: Failed password for root from 103.91.211.12 port 60101 ssh2
+Jun 11 14:13:05 kali sshd[1052]: Failed password for root from 103.91.211.12 port 60102 ssh2
+Jun 11 14:13:07 kali sshd[1053]: Failed password for root from 103.91.211.12 port 60103 ssh2
+Jun 11 14:13:09 kali sshd[1054]: Failed password for root from 103.91.211.12 port 60104 ssh2
+Jun 11 14:13:11 kali sshd[1055]: Failed password for root from 103.91.211.12 port 60105 ssh2
+Jun 11 14:13:13 kali sshd[1056]: Failed password for root from 103.91.211.12 port 60106 ssh2
+Jun 11 14:13:15 kali sshd[1057]: Failed password for root from 103.91.211.12 port 60107 ssh2
+Jun 11 14:14:00 kali sshd[1060]: Connection closed by authenticating user root 103.91.211.12 port 60120 [preauth]
+Jun 11 14:15:22 kali login[1200]: pam_unix(login:session): session opened for user ilya by LOGIN(uid=0)
+Jun 11 14:45:11 kali login[1200]: pam_unix(login:session): session closed for user ilya
+Jun 11 14:46:01 kali sshd[1070]: Invalid user postgres from 77.222.61.14 port 55001
+Jun 11 14:46:02 kali sshd[1070]: Failed password for invalid user postgres from 77.222.61.14 port 55001 ssh2
+Jun 11 14:46:04 kali sshd[1071]: Failed password for invalid user postgres from 77.222.61.14 port 55003 ssh2
+Jun 11 14:46:06 kali sshd[1072]: Failed password for invalid user postgres from 77.222.61.14 port 55005 ssh2
+Jun 11 14:46:08 kali sshd[1073]: Failed password for invalid user postgres from 77.222.61.14 port 55007 ssh2
+Jun 11 14:46:10 kali sshd[1074]: Failed password for invalid user postgres from 77.222.61.14 port 55009 ssh2
+Jun 11 14:50:01 kali CRON[1300]: pam_unix(cron:session): session opened for user root(uid=0)
+Jun 11 14:50:01 kali CRON[1300]: pam_unix(cron:session): session closed for user root
+Jun 11 14:55:01 kali sshd[1080]: Accepted password for backup from 192.168.1.50 port 51001 ssh2
+Jun 11 14:55:01 kali sshd[1080]: pam_unix(sshd:session): session opened for user backup(uid=1002) by (uid=0)
+Jun 11 14:59:44 kali sshd[1080]: pam_unix(sshd:session): session closed for user backup
