@@ -27,21 +27,21 @@ print("17. suricata.log)")
 print("18. docker.log)")
 print("19. iis.log (IIS)")
 choice = input()
+file_str = []
+my_dict = []
+string = {}
 match choice:
     case "1":
         compiled_patterns = [
+    re.compile(r'Failed password for invalid user (\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'),
     re.compile(r'Failed password for (\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'),
-    re.compile(r'(?:invalid user )?(\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'),
-    re.compile(r'from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'),
+    re.compile(r'Invalid user (\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'),
     re.compile(r'Accepted password for (\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})')
 ]
         print("You selected auth.log (SSH/Linux)")
         # Parse SSH auth log for failed/successful logins
         print("Write a full file path")
         log_file_path = input().strip()
-        file_str = []
-        my_dict = []
-        string = {}
         with open(log_file_path,"r") as file:
             for line in file:
                 file_str.append(line)
@@ -54,10 +54,11 @@ match choice:
                     my_dict.append(tuplee)
         for line in my_dict:
             if line not in string:
-                string[my_dict.count(line)] = line
+                string[line] = my_dict.count(line)
             else:
                 pass
-        print(string)
+        filtered = {k: v for k, v in string.items() if 5 <= v}
+        print(filtered)
 
 
     case "2":
