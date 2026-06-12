@@ -133,8 +133,26 @@ match choice:
         # Parse SSH auth log for failed/successful logins
         print("Write a full file path")
         log_file_path = input().strip()
+        file_str = []
+        my_dict = []
+        string = {}
         with open(log_file_path,"r") as file:
             for line in file:
+                file_str.append(line)
+        for line in file_str:
+            cnt = file_str.count(line)
+            for pattern in compiled_patterns:
+                match = pattern.search(line)
+                if match != None:
+                    tuplee = match.groups()
+                    my_dict.append(tuplee)
+        for line in my_dict:
+            if line not in string:
+                string[my_dict.count(line)] = line
+            else:
+                pass
+        print(string)
+
 
     case "2":
         print("You selected access.log (Apache)")
