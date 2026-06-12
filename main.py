@@ -5,6 +5,34 @@ import json
 import time
 import vt
 
+def parse_log_file(compiled_patterns):
+    file_str = []
+    my_dict = []
+    string = {}
+    print("Write a full file path")
+    log_file_path = input().strip()
+    with open(log_file_path, "r") as file:
+        for line in file:
+            file_str.append(line)
+    
+    for line in file_str:
+        cnt = file_str.count(line)
+        for pattern in compiled_patterns:
+            match = pattern.search(line)
+            if match != None:
+                tuplee = match.groups()
+                my_dict.append(tuplee)
+    
+    for line in my_dict:
+        if line not in string:
+            string[line] = my_dict.count(line)
+        else:
+            pass
+    
+    filtered = {k: v for k, v in string.items() if 5 <= v}
+    print(filtered)
+    return filtered
+
 choice = 0
 print("LOG PARSER TOOLKIT - Select log type")
 print("1. auth.log (SSH/Linux)")
@@ -27,9 +55,6 @@ print("17. suricata.log)")
 print("18. docker.log)")
 print("19. iis.log (IIS)")
 choice = input()
-file_str = []
-my_dict = []
-string = {}
 match choice:
     case "1":
         compiled_patterns = [
@@ -40,30 +65,21 @@ match choice:
 ]
         print("You selected auth.log (SSH/Linux)")
         # Parse SSH auth log for failed/successful logins
-        print("Write a full file path")
-        log_file_path = input().strip()
-        with open(log_file_path,"r") as file:
-            for line in file:
-                file_str.append(line)
-        for line in file_str:
-            cnt = file_str.count(line)
-            for pattern in compiled_patterns:
-                match = pattern.search(line)
-                if match != None:
-                    tuplee = match.groups()
-                    my_dict.append(tuplee)
-        for line in my_dict:
-            if line not in string:
-                string[line] = my_dict.count(line)
-            else:
-                pass
-        filtered = {k: v for k, v in string.items() if 5 <= v}
-        print(filtered)
+        print(parse_log_file(compiled_patterns))
 
 
     case "2":
         print("You selected access.log (Apache)")
+
+        compiled_patterns = [
+        re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - - [(\S+) \d+] "(\S{3,4}) (\S+) HTTP/S+" (\d{3})'), #192.168.2.20 - - [28/Jul/2006:10:27:10 -0300] "GET /cgi-bin/try/ HTTP/1.0" 200 3395
+        re.compile(r'Failed password for (\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'),
+        re.compile(r'Invalid user (\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'),
+        re.compile(r'Accepted password for (\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})')
+    ]
+        print("You selected access.log (Apache)")
         # Parse Apache access log for HTTP methods, URLs, status codes
+        print(parse_log_file(compiled_patterns))
     case "3":
         print("You selected error.log (Apache)")
         # Parse Apache error log for errors and IP addresses
