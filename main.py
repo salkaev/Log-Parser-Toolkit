@@ -29,8 +29,7 @@ def parse_log_file(compiled_patterns):
         else:
             pass
     
-    filtered = {k: v for k, v in string.items() if 5 <= v}
-    print(filtered)
+    filtered = {k: v for k, v in string.items()}
     return filtered
 
 choice = 0
@@ -58,10 +57,10 @@ choice = input()
 match choice:
     case "1":
         compiled_patterns = [
-    re.compile(r'Failed password for invalid user (\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'),
-    re.compile(r'Failed password for (\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'),
-    re.compile(r'Invalid user (\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'),
-    re.compile(r'Accepted password for (\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})')
+    re.compile(r'Failed password for invalid user (\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'), # "Failed password for invalid user admin from 185.143.22.10"
+    re.compile(r'Failed password for (\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'), # "Failed password for root from 185.143.22.10"
+    re.compile(r'Invalid user (\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'), # "Invalid user admin from 185.143.22.10"
+    re.compile(r'Accepted password for (\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'), # "Accepted password for ilya from 192.168.1.15"
 ]
         print("You selected auth.log (SSH/Linux)")
         # Parse SSH auth log for failed/successful logins
@@ -69,13 +68,12 @@ match choice:
 
 
     case "2":
-        print("You selected access.log (Apache)")
 
         compiled_patterns = [
-        re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - - [(\S+) \d+] "(\S{3,4}) (\S+) HTTP/S+" (\d{3})'), #192.168.2.20 - - [28/Jul/2006:10:27:10 -0300] "GET /cgi-bin/try/ HTTP/1.0" 200 3395
-        re.compile(r'Failed password for (\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'),
-        re.compile(r'Invalid user (\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'),
-        re.compile(r'Accepted password for (\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})')
+re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - - \[.+\] "(GET) (.+1=1.*) HTTP\S+" (\d{3})'),# 192.168.1.100 - - [10/Oct/2026:13:55:36 +0000] "GET /products.php?id=1 OR 1=1 HTTP/1.1" 200 5120
+re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - - \[.+\] "(GET) (.+1=2.*) HTTP\S+" (\d{3})'),# 203.0.113.5 - - [10/Oct/2026:13:55:37 +0000] "GET /user.php?id=1 AND 1=2 HTTP/1.1" 500 256
+re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - - \[.+\] "(GET) (\S+) HTTP\S+" (\d{3})'), # 192.168.1.100 - - [10/Oct/2026:13:55:38 +0000] "GET /search.php?q=admin' HTTP/1.1" 500 128
+re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - - \[.+\] "(\S{3,4}) (\S+) HTTP\S+" (\d{3})')# 192.168.2.20 - - [28/Jul/2006:10:27:10 -0300] "GET /cgi-bin/try/ HTTP/1.0" 200 3395
     ]
         print("You selected access.log (Apache)")
         # Parse Apache access log for HTTP methods, URLs, status codes

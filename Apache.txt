@@ -1,5 +1,10 @@
 192.168.2.20 - - [28/Jul/2006:10:27:10 -0300] "GET /cgi-bin/try/ HTTP/1.0" 200 3395
+192.168.2.20 - - [28/Jul/2006:10:27:10 -0300] "GET /cgi-bin/try/ HTTP/1.0" 200 3395
+192.168.2.20 - - [28/Jul/2006:10:27:10 -0300] "GET /cgi-bin/try/ HTTP/1.0" 200 3395
 127.0.0.1 - - [28/Jul/2006:10:22:04 -0300] "GET / HTTP/1.0" 200 2216
 127.0.0.1 - - [28/Jul/2006:10:27:32 -0300] "GET /hidden/ HTTP/1.0" 404 7218
 64.242.88.10 - - [07/Mar/2004:17:09:01 -0800] "GET /twiki/bin/search/Main/SearchResult?scope=text&regex=on&search=Joris%20*Benschop[^A-Za-z] HTTP/1.1" 200 4284
+10.0.0.153 - - [07/Mar/2004:17:16:00 -0800] "GET /cgi-bin/mailgraph.cgi/mailgraph_3_err.png HTTP/1.1" 404 2856
+10.0.0.153 - - [07/Mar/2004:17:16:00 -0800] "GET /cgi-bin/mailgraph.cgi/mailgraph_3_err.png HTTP/1.1" 404 2856
+10.0.0.153 - - [07/Mar/2004:17:16:00 -0800] "GET /cgi-bin/mailgraph.cgi/mailgraph_3_err.png HTTP/1.1" 404 2856
 10.0.0.153 - - [07/Mar/2004:17:16:00 -0800] "GET /cgi-bin/mailgraph.cgi/mailgraph_3_err.png HTTP/1.1" 404 2856
