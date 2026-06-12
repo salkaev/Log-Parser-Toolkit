@@ -68,19 +68,25 @@ match choice:
 
 
     case "2":
-
         compiled_patterns = [
-re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - - \[.+\] "(GET) (.+1=1.*) HTTP\S+" (\d{3})'),# 192.168.1.100 - - [10/Oct/2026:13:55:36 +0000] "GET /products.php?id=1 OR 1=1 HTTP/1.1" 200 5120
-re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - - \[.+\] "(GET) (.+1=2.*) HTTP\S+" (\d{3})'),# 203.0.113.5 - - [10/Oct/2026:13:55:37 +0000] "GET /user.php?id=1 AND 1=2 HTTP/1.1" 500 256
-re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - - \[.+\] "(GET) (\S+) HTTP\S+" (\d{3})'), # 192.168.1.100 - - [10/Oct/2026:13:55:38 +0000] "GET /search.php?q=admin' HTTP/1.1" 500 128
-re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - - \[.+\] "(\S{3,4}) (\S+) HTTP\S+" (\d{3})')# 192.168.2.20 - - [28/Jul/2006:10:27:10 -0300] "GET /cgi-bin/try/ HTTP/1.0" 200 3395
+    re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - - \[.+\] "(GET) (.+1=1.*) HTTP\S+" (\d{3})'),# 192.168.1.100 - - [10/Oct/2026:13:55:36 +0000] "GET /products.php?id=1 OR 1=1 HTTP/1.1" 200 5120
+    re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - - \[.+\] "(GET) (.+1=2.*) HTTP\S+" (\d{3})'),# 203.0.113.5 - - [10/Oct/2026:13:55:37 +0000] "GET /user.php?id=1 AND 1=2 HTTP/1.1" 500 256
+    re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - - \[.+\] "(GET) (\S+) HTTP\S+" (\d{3})'), # 192.168.1.100 - - [10/Oct/2026:13:55:38 +0000] "GET /search.php?q=admin' HTTP/1.1" 500 128
+    re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - - \[.+\] "(\S{3,4}) (\S+) HTTP\S+" (\d{3})')# 192.168.2.20 - - [28/Jul/2006:10:27:10 -0300] "GET /cgi-bin/try/ HTTP/1.0" 200 3395
     ]
         print("You selected access.log (Apache)")
         # Parse Apache access log for HTTP methods, URLs, status codes
         print(parse_log_file(compiled_patterns))
     case "3":
+        compiled_patterns = [
+    
+    ]
         print("You selected error.log (Apache)")
         # Parse Apache error log for errors and IP addresses
+        re.compile(r'\[.+\] (\[ssl:error\]) \[.+\] (AH01961: SSL Proxy requested for unknown host)'),#[Wed Jun 11 14:00:05.123456 2026] [ssl:error] [pid 1234:tid 1234] [client 185.143.22.10:54323] AH01961: SSL Proxy requested for unknown host
+        re.compile(r'\[.+\] (\[auth_basic:error\]) \[.+\] (\d+:) (\S+), referer: (\S+)'),#[Wed Jun 11 14:00:04.123456 2026] [auth_basic:error] [pid 1234:tid 1234] [client 185.143.22.10:54322] user admin not found, referer: http://185.143.22.10/admin
+        re.compile(r'\[.+\] (\[cgi:error\]) \[.+\] \(2\)(.+:) (\S+), referer: (\S+)'),#[Wed Jun 11 14:00:02.123456 2026] [cgi:error] [pid 1234:tid 1234] (2)Script not found or unable to stat: /usr/lib/cgi-bin/test.cgi, referer: http://185.143.22.10/
+        re.compile(r'\[.+\] (\[.+:error\]) \[.+\] \(2\)(\d+:) \S+, referer: (\S+)'),#[Wed Jun 11 14:00:02.123456 2026] [core:error] [pid 1234:tid 1234] (2)File does not exist: /var/www/html/admin, referer: http://185.143.22.10/
     case "4":
         print("You selected nginx_error.log (Nginx)")
         # Parse Nginx error log for file paths and client IPs

@@ -1,10 +1,13 @@
-192.168.2.20 - - [28/Jul/2006:10:27:10 -0300] "GET /cgi-bin/try/ HTTP/1.0" 200 3395
-192.168.2.20 - - [28/Jul/2006:10:27:10 -0300] "GET /cgi-bin/try/ HTTP/1.0" 200 3395
-192.168.2.20 - - [28/Jul/2006:10:27:10 -0300] "GET /cgi-bin/try/ HTTP/1.0" 200 3395
-127.0.0.1 - - [28/Jul/2006:10:22:04 -0300] "GET / HTTP/1.0" 200 2216
-127.0.0.1 - - [28/Jul/2006:10:27:32 -0300] "GET /hidden/ HTTP/1.0" 404 7218
-64.242.88.10 - - [07/Mar/2004:17:09:01 -0800] "GET /twiki/bin/search/Main/SearchResult?scope=text&regex=on&search=Joris%20*Benschop[^A-Za-z] HTTP/1.1" 200 4284
-10.0.0.153 - - [07/Mar/2004:17:16:00 -0800] "GET /cgi-bin/mailgraph.cgi/mailgraph_3_err.png HTTP/1.1" 404 2856
-10.0.0.153 - - [07/Mar/2004:17:16:00 -0800] "GET /cgi-bin/mailgraph.cgi/mailgraph_3_err.png HTTP/1.1" 404 2856
-10.0.0.153 - - [07/Mar/2004:17:16:00 -0800] "GET /cgi-bin/mailgraph.cgi/mailgraph_3_err.png HTTP/1.1" 404 2856
-10.0.0.153 - - [07/Mar/2004:17:16:00 -0800] "GET /cgi-bin/mailgraph.cgi/mailgraph_3_err.png HTTP/1.1" 404 2856
+192.168.1.10 - - [15/Feb/2026:10:00:01 +0000] "GET /index.html HTTP/1.1" 200 5120
+192.168.1.10 - - [15/Feb/2026:10:00:02 +0000] "GET /css/style.css HTTP/1.1" 200 2048
+192.168.1.20 - - [15/Feb/2026:10:00:03 +0000] "POST /contact.php HTTP/1.1" 302 512
+192.168.1.100 - - [15/Feb/2026:10:00:04 +0000] "GET /products.php?id=1 OR 1=1 HTTP/1.1" 200 5120
+203.0.113.5 - - [15/Feb/2026:10:00:05 +0000] "GET /user.php?id=1 AND 1=2 HTTP/1.1" 500 256
+192.168.1.100 - - [15/Feb/2026:10:00:06 +0000] "GET /search.php?q=admin' HTTP/1.1" 500 128
+192.168.1.100 - - [15/Feb/2026:10:00:07 +0000] "GET /login.php?user=' OR '1'='1 HTTP/1.1" 200 1024
+192.168.2.20 - - [15/Feb/2026:10:00:08 +0000] "DELETE /api/user/999 HTTP/1.1" 403 256
+192.168.2.21 - - [15/Feb/2026:10:00:09 +0000] "PUT /api/update HTTP/1.1" 401 128
+192.168.2.22 - - [15/Feb/2026:10:00:10 +0000] "HEAD /secret.html HTTP/1.1" 404 0
+192.168.1.101 - - [15/Feb/2026:10:00:11 +0000] "GET /page.php?cat=5 AND 1=2 UNION SELECT 1,2,3 HTTP/1.1" 500 512
+192.168.1.102 - - [15/Feb/2026:10:00:12 +0000] "GET /profile.php?id=' UNION SELECT 1,2,3 HTTP/1.1" 500 256
+192.168.1.103 - - [15/Feb/2026:10:00:13 +0000] "GET /admin.php?userid=10 AND 1=2 HTTP/1.1" 404 128
