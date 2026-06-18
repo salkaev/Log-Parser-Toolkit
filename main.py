@@ -106,6 +106,52 @@ match choice:
         ]
     case "5":
         print("You selected dhcp.log (DHCP)")
+        А, понял! Вот готовые регулярки для **Linux DHCP-сервера (ISC DHCP / Kea DHCP)** в вашем стиле. Формат ISC DHCP — это классический текстовый лог в `/var/log/syslog` или `/var/log/dhcpd.log`.
+
+```python
+import re
+
+patterns = [
+    # Jun 18 14:00:05 dhcpd: DHCPDISCOVER from 00:11:22:33:44:55 via eth0: no free leases
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ dhcpd: DHCPDISCOVER from (\S+) via \S+: no free leases'),# [Jun 18 14:00:05] dhcpd: DHCPDISCOVER from 00:11:22:33:44:55 via eth0: no free leases
+
+    # Jun 18 14:00:05 dhcpd: DHCPDISCOVER from 00:11:22:33:44:55 via eth0: network 192.168.1.0/24: no free leases
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ dhcpd: DHCPDISCOVER from (\S+) via \S+: network \S+: no free leases'),# [Jun 18 14:00:05] dhcpd: DHCPDISCOVER from 00:11:22:33:44:55 via eth0: network 192.168.1.0/24: no free leases
+
+    # Jun 18 14:00:05 dhcpd: DHCPACK to 192.168.1.100 (00:11:22:33:44:55) via eth0: address already in use by 66:77:88:99:AA:BB
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ dhcpd: DHCPACK to \S+ \((\S+)\) via \S+: address already in use by (\S+)'),# [Jun 18 14:00:05] dhcpd: DHCPACK to 192.168.1.100 (00:11:22:33:44:55) via eth0: address already in use by 66:77:88:99:AA:BB
+
+    # Jun 18 14:00:05 dhcpd: DHCPREQUEST for 192.168.1.101 from 00:11:22:33:44:55 via eth0: lease not found
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ dhcpd: DHCPREQUEST for \S+ from (\S+) via \S+: lease not found'),# [Jun 18 14:00:05] dhcpd: DHCPREQUEST for 192.168.1.101 from 00:11:22:33:44:55 via eth0: lease not found
+
+    # Jun 18 14:00:05 dhcpd: DHCPINFORM from 00:11:22:33:44:55 via eth0: unknown subnet
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ dhcpd: DHCPINFORM from (\S+) via \S+: unknown subnet'),# [Jun 18 14:00:05] dhcpd: DHCPINFORM from 00:11:22:33:44:55 via eth0: unknown subnet
+
+    # Jun 18 14:00:05 dhcpd: DHCP lease for IP 192.168.1.101 is greater than pool size
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ dhcpd: DHCP lease for IP \S+ is greater than pool size'),# [Jun 18 14:00:05] dhcpd: DHCP lease for IP 192.168.1.101 is greater than pool size
+
+    # Jun 18 14:00:05 dhcpd: failed to write database /var/lib/dhcp/dhcpd.leases: No space left on device
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ dhcpd: failed to write database \S+: (?:No space left on device|Permission denied|Read-only file system)'),# [Jun 18 14:00:05] dhcpd: failed to write database /var/lib/dhcp/dhcpd.leases: No space left on device
+
+    # Jun 18 14:00:05 dhcpd: DHCP server not configured to serve this client (00:11:22:33:44:55)
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ dhcpd: DHCP server not configured to serve this client \((\S+)\)'),# [Jun 18 14:00:05] dhcpd: DHCP server not configured to serve this client (00:11:22:33:44:55)
+
+    # Jun 18 14:00:05 dhcpd: multiple DHCP servers detected on network (IP 192.168.1.250)
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ dhcpd: multiple DHCP servers detected on network \(IP (\S+)\)'),# [Jun 18 14:00:05] dhcpd: multiple DHCP servers detected on network (IP 192.168.1.250)
+
+    # Jun 18 14:00:05 dhcpd: DHCP packet received on interface eth0 with invalid option
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ dhcpd: DHCP packet received on interface \S+ with invalid option'),# [Jun 18 14:00:05] dhcpd: DHCP packet received on interface eth0 with invalid option
+
+    # Jun 18 14:00:05 kernel: [12345.678901] DHCP-snooping: Packet from unauthorized server 192.168.1.250 dropped on port eth0
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ kernel: \[.*?\] DHCP-snooping: Packet from unauthorized server (\S+) dropped on port \S+'),# [Jun 18 14:00:05] kernel: [12345.678901] DHCP-snooping: Packet from unauthorized server 192.168.1.250 dropped on port eth0
+
+    # Jun 18 14:00:05 dhcpd: Refusing binding for client 00:11:22:33:44:55 on subnet 192.168.1.0/24 with lease time 0
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ dhcpd: Refusing binding for client (\S+) on subnet \S+ with lease time 0'),# [Jun 18 14:00:05] dhcpd: Refusing binding for client 00:11:22:33:44:55 on subnet 192.168.1.0/24 with lease time 0
+
+    # Jun 18 14:00:05 dhcpd: possible DHCP starvation attack from MAC 00:11:22:33:44:55 (1000 requests in 10 seconds)
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ dhcpd: possible DHCP starvation attack from MAC (\S+) \(\d+ requests in \d+ seconds\)'),# [Jun 18 14:00:05] dhcpd: possible DHCP starvation attack from MAC 00:11:22:33:44:55 (1000 requests in 10 seconds)
+]
+```
         # Parse DHCP log for IP and MAC addresses
     case "6":
         print("You selected dns.log (DNS)")
