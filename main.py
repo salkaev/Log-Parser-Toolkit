@@ -89,6 +89,7 @@ match choice:
         re.compile(r'\[.+\] (\[cgi:error\]) \[.+\] \(2\)(.+:) (\S+), referer: (\S+)'),#[Wed Jun 11 14:00:02.123456 2026] [cgi:error] [pid 1234:tid 1234] (2)Script not found or unable to stat: /usr/lib/cgi-bin/test.cgi, referer: http://185.143.22.10/
         re.compile(r'\[.+\] (\[.+:error\]) \[.+\] \(2\)(\d+:) \S+, referer: (\S+)')#[Wed Jun 11 14:00:02.123456 2026] [core:error] [pid 1234:tid 1234] (2)File does not exist: /var/www/html/admin, referer: http://185.143.22.10/
         ]
+
     case "4":
         print("You selected nginx_error.log (Nginx)")
         compiled_patterns = [
@@ -104,58 +105,86 @@ match choice:
         re.compile(r'\[.+\] \[error\] \d+#\d+: \*\d+ client sent invalid (?:method|header|request) while reading client request line, client: (\S+), server: (\S+), request: "(\S+) (\S+) HTTP/\d\.\d+", host: "(\S+)"'),# [Wed Jun 11 14:00:03.123456 2026] [error] 1234#1234: *12345 client sent invalid method "FOO" while reading client request line, client: 185.143.22.10, server: example.com, request: "FOO / HTTP/1.1", host: "185.143.22.10"
         re.compile(r'open() "(/S+)" failed ')
         ]
+
     case "5":
         print("You selected dhcp.log (DHCP)")
-        А, понял! Вот готовые регулярки для **Linux DHCP-сервера (ISC DHCP / Kea DHCP)** в вашем стиле. Формат ISC DHCP — это классический текстовый лог в `/var/log/syslog` или `/var/log/dhcpd.log`.
-
-```python
-import re
-
-patterns = [
+        patterns = [
     # Jun 18 14:00:05 dhcpd: DHCPDISCOVER from 00:11:22:33:44:55 via eth0: no free leases
     re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ dhcpd: DHCPDISCOVER from (\S+) via \S+: no free leases'),# [Jun 18 14:00:05] dhcpd: DHCPDISCOVER from 00:11:22:33:44:55 via eth0: no free leases
-
     # Jun 18 14:00:05 dhcpd: DHCPDISCOVER from 00:11:22:33:44:55 via eth0: network 192.168.1.0/24: no free leases
     re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ dhcpd: DHCPDISCOVER from (\S+) via \S+: network \S+: no free leases'),# [Jun 18 14:00:05] dhcpd: DHCPDISCOVER from 00:11:22:33:44:55 via eth0: network 192.168.1.0/24: no free leases
-
     # Jun 18 14:00:05 dhcpd: DHCPACK to 192.168.1.100 (00:11:22:33:44:55) via eth0: address already in use by 66:77:88:99:AA:BB
     re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ dhcpd: DHCPACK to \S+ \((\S+)\) via \S+: address already in use by (\S+)'),# [Jun 18 14:00:05] dhcpd: DHCPACK to 192.168.1.100 (00:11:22:33:44:55) via eth0: address already in use by 66:77:88:99:AA:BB
-
     # Jun 18 14:00:05 dhcpd: DHCPREQUEST for 192.168.1.101 from 00:11:22:33:44:55 via eth0: lease not found
     re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ dhcpd: DHCPREQUEST for \S+ from (\S+) via \S+: lease not found'),# [Jun 18 14:00:05] dhcpd: DHCPREQUEST for 192.168.1.101 from 00:11:22:33:44:55 via eth0: lease not found
-
     # Jun 18 14:00:05 dhcpd: DHCPINFORM from 00:11:22:33:44:55 via eth0: unknown subnet
     re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ dhcpd: DHCPINFORM from (\S+) via \S+: unknown subnet'),# [Jun 18 14:00:05] dhcpd: DHCPINFORM from 00:11:22:33:44:55 via eth0: unknown subnet
-
     # Jun 18 14:00:05 dhcpd: DHCP lease for IP 192.168.1.101 is greater than pool size
     re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ dhcpd: DHCP lease for IP \S+ is greater than pool size'),# [Jun 18 14:00:05] dhcpd: DHCP lease for IP 192.168.1.101 is greater than pool size
-
     # Jun 18 14:00:05 dhcpd: failed to write database /var/lib/dhcp/dhcpd.leases: No space left on device
     re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ dhcpd: failed to write database \S+: (?:No space left on device|Permission denied|Read-only file system)'),# [Jun 18 14:00:05] dhcpd: failed to write database /var/lib/dhcp/dhcpd.leases: No space left on device
-
     # Jun 18 14:00:05 dhcpd: DHCP server not configured to serve this client (00:11:22:33:44:55)
     re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ dhcpd: DHCP server not configured to serve this client \((\S+)\)'),# [Jun 18 14:00:05] dhcpd: DHCP server not configured to serve this client (00:11:22:33:44:55)
-
     # Jun 18 14:00:05 dhcpd: multiple DHCP servers detected on network (IP 192.168.1.250)
     re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ dhcpd: multiple DHCP servers detected on network \(IP (\S+)\)'),# [Jun 18 14:00:05] dhcpd: multiple DHCP servers detected on network (IP 192.168.1.250)
-
     # Jun 18 14:00:05 dhcpd: DHCP packet received on interface eth0 with invalid option
     re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ dhcpd: DHCP packet received on interface \S+ with invalid option'),# [Jun 18 14:00:05] dhcpd: DHCP packet received on interface eth0 with invalid option
-
     # Jun 18 14:00:05 kernel: [12345.678901] DHCP-snooping: Packet from unauthorized server 192.168.1.250 dropped on port eth0
     re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ kernel: \[.*?\] DHCP-snooping: Packet from unauthorized server (\S+) dropped on port \S+'),# [Jun 18 14:00:05] kernel: [12345.678901] DHCP-snooping: Packet from unauthorized server 192.168.1.250 dropped on port eth0
-
     # Jun 18 14:00:05 dhcpd: Refusing binding for client 00:11:22:33:44:55 on subnet 192.168.1.0/24 with lease time 0
     re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ dhcpd: Refusing binding for client (\S+) on subnet \S+ with lease time 0'),# [Jun 18 14:00:05] dhcpd: Refusing binding for client 00:11:22:33:44:55 on subnet 192.168.1.0/24 with lease time 0
-
     # Jun 18 14:00:05 dhcpd: possible DHCP starvation attack from MAC 00:11:22:33:44:55 (1000 requests in 10 seconds)
     re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ dhcpd: possible DHCP starvation attack from MAC (\S+) \(\d+ requests in \d+ seconds\)'),# [Jun 18 14:00:05] dhcpd: possible DHCP starvation attack from MAC 00:11:22:33:44:55 (1000 requests in 10 seconds)
 ]
-```
         # Parse DHCP log for IP and MAC addresses
     case "6":
         print("You selected dns.log (DNS)")
-        # Parse DNS log for subdomains, domains and source IPs
+        patterns = [
+    # Jun 18 14:00:05 named[12345]: client 185.143.22.10#54321: query: example.com IN A + (192.168.1.1)
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ named\[\d+\]: client (\S+)#\d+: query: \S+ IN A \+ \(\S+\)'),# [Jun 18 14:00:05] named[12345]: client 185.143.22.10#54321: query: example.com IN A + (192.168.1.1)
+    # Jun 18 14:00:05 named[12345]: client 185.143.22.10#54321: query: example.com IN AAAA + (192.168.1.1)
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ named\[\d+\]: client (\S+)#\d+: query: \S+ IN AAAA \+ \(\S+\)'),# [Jun 18 14:00:05] named[12345]: client 185.143.22.10#54321: query: example.com IN AAAA + (192.168.1.1)
+    # Jun 18 14:00:05 named[12345]: client 185.143.22.10#54321: query: example.com IN TXT + (192.168.1.1)
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ named\[\d+\]: client (\S+)#\d+: query: \S+ IN TXT \+ \(\S+\)'),# [Jun 18 14:00:05] named[12345]: client 185.143.22.10#54321: query: example.com IN TXT + (192.168.1.1)
+    # Jun 18 14:00:05 named[12345]: client 185.143.22.10#54321: query: example.com IN ANY + (192.168.1.1)
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ named\[\d+\]: client (\S+)#\d+: query: \S+ IN ANY \+ \(\S+\)'),# [Jun 18 14:00:05] named[12345]: client 185.143.22.10#54321: query: example.com IN ANY + (192.168.1.1)
+    # Jun 18 14:00:05 named[12345]: client 185.143.22.10#54321: request for AXFR of zone "example.com" from 192.168.1.1 (denied)
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ named\[\d+\]: client (\S+)#\d+: request for AXFR of zone "(\S+)" from \S+ \(denied\)'),# [Jun 18 14:00:05] named[12345]: client 185.143.22.10#54321: request for AXFR of zone "example.com" from 192.168.1.1 (denied)
+    # Jun 18 14:00:05 named[12345]: client 185.143.22.10#54321: transfer of zone "example.com" denied
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ named\[\d+\]: client (\S+)#\d+: transfer of zone "(\S+)" denied'),# [Jun 18 14:00:05] named[12345]: client 185.143.22.10#54321: transfer of zone "example.com" denied
+    # Jun 18 14:00:05 named[12345]: validation failure (example.com IN A): signature expired
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ named\[\d+\]: validation failure \((\S+) IN A\): signature expired'),# [Jun 18 14:00:05] named[12345]: validation failure (example.com IN A): signature expired
+    # Jun 18 14:00:05 named[12345]: validation failure (example.com IN A): bogus DNSSEC signature
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ named\[\d+\]: validation failure \((\S+) IN A\): bogus DNSSEC signature'),# [Jun 18 14:00:05] named[12345]: validation failure (example.com IN A): bogus DNSSEC signature
+    # Jun 18 14:00:05 named[12345]: client 185.143.22.10#54321: query size 65535 bytes denied
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ named\[\d+\]: client (\S+)#\d+: query size \d+ bytes denied'),# [Jun 18 14:00:05] named[12345]: client 185.143.22.10#54321: query size 65535 bytes denied
+    # Jun 18 14:00:05 named[12345]: client 185.143.22.10#54321: request too large (65535 bytes), closing connection
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ named\[\d+\]: client (\S+)#\d+: request too large \(\d+ bytes\), closing connection'),# [Jun 18 14:00:05] named[12345]: client 185.143.22.10#54321: request too large (65535 bytes), closing connection
+    # Jun 18 14:00:05 named[12345]: client 185.143.22.10#54321: query: example.com IN UNKNOWN123 + (192.168.1.1)
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ named\[\d+\]: client (\S+)#\d+: query: \S+ IN UNKNOWN\d+ \+ \(\S+\)'),# [Jun 18 14:00:05] named[12345]: client 185.143.22.10#54321: query: example.com IN UNKNOWN123 + (192.168.1.1)
+    # Jun 18 14:00:05 named[12345]: client 185.143.22.10#54321: query: 127.0.0.1 IN A + (192.168.1.1)
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ named\[\d+\]: client (\S+)#\d+: query: \d+\.\d+\.\d+\.\d+ IN A \+ \(\S+\)'),# [Jun 18 14:00:05] named[12345]: client 185.143.22.10#54321: query: 127.0.0.1 IN A + (192.168.1.1)
+    # Jun 18 14:00:05 named[12345]: client 185.143.22.10#54321: query: localhost IN A + (192.168.1.1)
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ named\[\d+\]: client (\S+)#\d+: query: localhost IN A \+ \(\S+\)'),# [Jun 18 14:00:05] named[12345]: client 185.143.22.10#54321: query: localhost IN A + (192.168.1.1)
+    # Jun 18 14:00:05 named[12345]: client 192.168.1.100#54321: query: xk23jf9s8df.example.com IN A + (192.168.1.1)
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ named\[\d+\]: client (\S+)#\d+: query: [a-z0-9]{10,}\.\S+ IN A \+ \(\S+\)'),# [Jun 18 14:00:05] named[12345]: client 192.168.1.100#54321: query: xk23jf9s8df.example.com IN A + (192.168.1.1)
+    # Jun 18 14:00:05 named[12345]: client 192.168.1.100#54321: query: this-domain-does-not-exist-12345.com IN A + (192.168.1.1)
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ named\[\d+\]: client (\S+)#\d+: query: \S+ IN A \+ \(\S+\)'),# [Jun 18 14:00:05] named[12345]: client 192.168.1.100#54321: query: this-domain-does-not-exist-12345.com IN A + (192.168.1.1)
+    # Jun 18 14:00:05 named[12345]: client 192.168.1.100#54321: query: malware-domain-xyz.com IN A + (192.168.1.1)
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ named\[\d+\]: client (\S+)#\d+: query: \S+ IN A \+ \(\S+\)'),# [Jun 18 14:00:05] named[12345]: client 192.168.1.100#54321: query: malware-domain-xyz.com IN A + (192.168.1.1)
+    # Jun 18 14:00:05 named[12345]: client 185.143.22.10#54321: query: example.com IN MX + (192.168.1.1)
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ named\[\d+\]: client (\S+)#\d+: query: \S+ IN MX \+ \(\S+\)'),# [Jun 18 14:00:05] named[12345]: client 185.143.22.10#54321: query: example.com IN MX + (192.168.1.1)
+    # Jun 18 14:00:05 named[12345]: client 185.143.22.10#54321: query: example.com IN NS + (192.168.1.1)
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ named\[\d+\]: client (\S+)#\d+: query: \S+ IN NS \+ \(\S+\)'),# [Jun 18 14:00:05] named[12345]: client 185.143.22.10#54321: query: example.com IN NS + (192.168.1.1)
+    # Jun 18 14:00:05 named[12345]: client 185.143.22.10#54321: query: example.com IN CNAME + (192.168.1.1)
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ named\[\d+\]: client (\S+)#\d+: query: \S+ IN CNAME \+ \(\S+\)'),# [Jun 18 14:00:05] named[12345]: client 185.143.22.10#54321: query: example.com IN CNAME + (192.168.1.1)
+    # Jun 18 14:00:05 named[12345]: client 185.143.22.10#54321: query: example.com IN PTR + (192.168.1.1)
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ named\[\d+\]: client (\S+)#\d+: query: \S+ IN PTR \+ \(\S+\)'),# [Jun 18 14:00:05] named[12345]: client 185.143.22.10#54321: query: example.com IN PTR + (192.168.1.1)
+    # Jun 18 14:00:05 named[12345]: client 185.143.22.10#54321: query: example.com IN SOA + (192.168.1.1)
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ named\[\d+\]: client (\S+)#\d+: query: \S+ IN SOA \+ \(\S+\)'),# [Jun 18 14:00:05] named[12345]: client 185.143.22.10#54321: query: example.com IN SOA + (192.168.1.1)
+    # Jun 18 14:00:05 named[12345]: client 185.143.22.10#54321: query: example.com IN SRV + (192.168.1.1)
+    re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ named\[\d+\]: client (\S+)#\d+: query: \S+ IN SRV \+ \(\S+\)'),# [Jun 18 14:00:05] named[12345]: client 185.143.22.10#54321: query: example.com IN SRV + (192.168.1.1)
+]
     case "7":
         print("You selected squid.log (Squid Proxy)")
         # Parse Squid proxy log for source/destination IPs and ports
