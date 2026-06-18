@@ -187,6 +187,40 @@ match choice:
 ]
     case "7":
         print("You selected squid.log (Squid Proxy)")
+        patterns = [
+            # Jun 18 14:00:05.123 12345 192.168.1.100 TCP_DENIED/403 0 CONNECT malicious-site.com:443 - HIER_NONE/- text/html
+            re.compile(r'\S+ \d+ \d+:\d+:\d+\.\d+ \d+ (\S+) TCP_DENIED/\d+ \d+ \S+ \S+:\d+'),# [Jun 18 14:00:05.123 12345] 192.168.1.100 TCP_DENIED/403 0 CONNECT malicious-site.com:443 - HIER_NONE/- text/html
+            # Jun 18 14:00:05.123 12345 192.168.1.100 TCP_MISS/200 1024 GET http://example.com - HIER_DIRECT/192.168.1.1 text/html
+            re.compile(r'\S+ \d+ \d+:\d+:\d+\.\d+ \d+ (\S+) TCP_MISS/\d+ \d+ \S+ (\S+)://(\S+)(?::\d+)?'),# [Jun 18 14:00:05.123 12345] 192.168.1.100 TCP_MISS/200 1024 GET http://example.com - HIER_DIRECT/192.168.1.1 text/html
+            # Jun 18 14:00:05.123 12345 192.168.1.100 TCP_TUNNEL/200 0 CONNECT malware-c2.com:443 - HIER_DIRECT/185.143.22.10 -
+            re.compile(r'\S+ \d+ \d+:\d+:\d+\.\d+ \d+ (\S+) TCP_TUNNEL/\d+ \d+ CONNECT (\S+):(\d+)'),# [Jun 18 14:00:05.123 12345] 192.168.1.100 TCP_TUNNEL/200 0 CONNECT malware-c2.com:443 - HIER_DIRECT/185.143.22.10 -
+            # Jun 18 14:00:05.123 12345 192.168.1.100 TCP_DENIED/403 0 GET http://192.168.1.1/admin - HIER_NONE/- text/html
+            re.compile(r'\S+ \d+ \d+:\d+:\d+\.\d+ \d+ (\S+) TCP_DENIED/\d+ \d+ \S+ http://(\S+)(?::\d+)?'),# [Jun 18 14:00:05.123 12345] 192.168.1.100 TCP_DENIED/403 0 GET http://192.168.1.1/admin - HIER_NONE/- text/html
+            # Jun 18 14:00:05.123 12345 192.168.1.100 TCP_DENIED/403 0 GET http://www.phishing-site.ru - HIER_NONE/- text/html
+            re.compile(r'\S+ \d+ \d+:\d+:\d+\.\d+ \d+ (\S+) TCP_DENIED/\d+ \d+ \S+ http://(\S+)'),# [Jun 18 14:00:05.123 12345] 192.168.1.100 TCP_DENIED/403 0 GET http://www.phishing-site.ru - HIER_NONE/- text/html
+            # Jun 18 14:00:05.123 12345 192.168.1.100 TCP_MISS/404 0 GET http://example.com/.env - HIER_DIRECT/192.168.1.1 text/html
+            re.compile(r'\S+ \d+ \d+:\d+:\d+\.\d+ \d+ (\S+) TCP_MISS/404 \d+ \S+ http://(\S+)/\.env'),# [Jun 18 14:00:05.123 12345] 192.168.1.100 TCP_MISS/404 0 GET http://example.com/.env - HIER_DIRECT/192.168.1.1 text/html
+            # Jun 18 14:00:05.123 12345 192.168.1.100 TCP_MISS/404 0 GET http://example.com/adminer.php - HIER_DIRECT/192.168.1.1 text/html
+            re.compile(r'\S+ \d+ \d+:\d+:\d+\.\d+ \d+ (\S+) TCP_MISS/404 \d+ \S+ http://(\S+)/adminer.php'),# [Jun 18 14:00:05.123 12345] 192.168.1.100 TCP_MISS/404 0 GET http://example.com/adminer.php - HIER_DIRECT/192.168.1.1 text/html
+            # Jun 18 14:00:05.123 12345 192.168.1.100 TCP_MISS/404 0 GET http://example.com/phpmyadmin/main.php - HIER_DIRECT/192.168.1.1 text/html
+            re.compile(r'\S+ \d+ \d+:\d+:\d+\.\d+ \d+ (\S+) TCP_MISS/404 \d+ \S+ http://(\S+)/phpmyadmin'),# [Jun 18 14:00:05.123 12345] 192.168.1.100 TCP_MISS/404 0 GET http://example.com/phpmyadmin/main.php - HIER_DIRECT/192.168.1.1 text/html
+            # Jun 18 14:00:05.123 12345 192.168.1.100 TCP_MISS/404 0 GET http://example.com/../../etc/passwd - HIER_DIRECT/192.168.1.1 text/html
+            re.compile(r'\S+ \d+ \d+:\d+:\d+\.\d+ \d+ (\S+) TCP_MISS/404 \d+ \S+ http://(\S+)/\.\./\.\./etc/passwd'),# [Jun 18 14:00:05.123 12345] 192.168.1.100 TCP_MISS/404 0 GET http://example.com/../../etc/passwd - HIER_DIRECT/192.168.1.1 text/html
+            # Jun 18 14:00:05.123 12345 192.168.1.100 TCP_MISS/404 0 GET http://example.com/?id=1 UNION SELECT - HIER_DIRECT/192.168.1.1 text/html
+            re.compile(r'\S+ \d+ \d+:\d+:\d+\.\d+ \d+ (\S+) TCP_MISS/404 \d+ \S+ http://(\S+)\?.*(UNION|SELECT|DROP|INSERT|UPDATE|DELETE|OR 1=1)'),# [Jun 18 14:00:05.123 12345] 192.168.1.100 TCP_MISS/404 0 GET http://example.com/?id=1 UNION SELECT - HIER_DIRECT/192.168.1.1 text/html
+            # Jun 18 14:00:05.123 12345 192.168.1.100 TCP_MISS/200 1024 GET http://example.com/xk23jf9s8df.php - HIER_DIRECT/192.168.1.1 text/html
+            re.compile(r'\S+ \d+ \d+:\d+:\d+\.\d+ \d+ (\S+) TCP_MISS/\d+ \d+ \S+ http://(\S+)/[a-z0-9]{10,}\.php'),# [Jun 18 14:00:05.123 12345] 192.168.1.100 TCP_MISS/200 1024 GET http://example.com/xk23jf9s8df.php - HIER_DIRECT/192.168.1.1 text/html
+            # Jun 18 14:00:05.123 12345 192.168.1.100 TCP_TUNNEL/200 0 CONNECT 192.168.1.1:8080 - HIER_DIRECT/192.168.1.1 -
+            re.compile(r'\S+ \d+ \d+:\d+:\d+\.\d+ \d+ (\S+) TCP_TUNNEL/\d+ \d+ CONNECT (\d+\.\d+\.\d+\.\d+):(\d+)'),# [Jun 18 14:00:05.123 12345] 192.168.1.100 TCP_TUNNEL/200 0 CONNECT 192.168.1.1:8080 - HIER_DIRECT/192.168.1.1 -
+            # Jun 18 14:00:05.123 12345 192.168.1.100 TCP_TUNNEL/200 0 CONNECT localhost:8080 - HIER_DIRECT/192.168.1.1 -
+            re.compile(r'\S+ \d+ \d+:\d+:\d+\.\d+ \d+ (\S+) TCP_TUNNEL/\d+ \d+ CONNECT localhost:(\d+)'),# [Jun 18 14:00:05.123 12345] 192.168.1.100 TCP_TUNNEL/200 0 CONNECT localhost:8080 - HIER_DIRECT/192.168.1.1 -
+            # Jun 18 14:00:05.123 12345 192.168.1.100 TCP_TUNNEL/200 0 CONNECT 127.0.0.1:8080 - HIER_DIRECT/192.168.1.1 -
+            re.compile(r'\S+ \d+ \d+:\d+:\d+\.\d+ \d+ (\S+) TCP_TUNNEL/\d+ \d+ CONNECT 127\.0\.0\.1:(\d+)'),# [Jun 18 14:00:05.123 12345] 192.168.1.100 TCP_TUNNEL/200 0 CONNECT 127.0.0.1:8080 - HIER_DIRECT/192.168.1.1 -
+            # Jun 18 14:00:05.123 12345 192.168.1.100 TCP_MISS/200 0 CONNECT http://example.com - HIER_DIRECT/192.168.1.1 text/html
+            re.compile(r'\S+ \d+ \d+:\d+:\d+\.\d+ \d+ (\S+) TCP_MISS/\d+ \d+ \S+ http://(\S+)(?::\d+)?'),# [Jun 18 14:00:05.123 12345] 192.168.1.100 TCP_MISS/200 0 CONNECT http://example.com - HIER_DIRECT/192.168.1.1 text/html
+            # Jun 18 14:00:05.123 12345 192.168.1.100 TCP_MISS/200 0 CONNECT https://example.com - HIER_DIRECT/192.168.1.1 text/html
+            re.compile(r'\S+ \d+ \d+:\d+:\d+\.\d+ \d+ (\S+) TCP_MISS/\d+ \d+ \S+ https://(\S+)(?::\d+)?'),# [Jun 18 14:00:05.123 12345] 192.168.1.100 TCP_MISS/200 0 CONNECT https://example.com - HIER_DIRECT/192.168.1.1 text/html
+        ]
         # Parse Squid proxy log for source/destination IPs and ports
     case "8":
         print("You selected firewall.log (Windows Firewall)")
