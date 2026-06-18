@@ -83,13 +83,27 @@ match choice:
     ]
         print("You selected error.log (Apache)")
         # Parse Apache error log for errors and IP addresses
+        compiled_patterns = [
         re.compile(r'\[.+\] (\[ssl:error\]) \[.+\] (AH01961: SSL Proxy requested for unknown host)'),#[Wed Jun 11 14:00:05.123456 2026] [ssl:error] [pid 1234:tid 1234] [client 185.143.22.10:54323] AH01961: SSL Proxy requested for unknown host
         re.compile(r'\[.+\] (\[auth_basic:error\]) \[.+\] (\d+:) (\S+), referer: (\S+)'),#[Wed Jun 11 14:00:04.123456 2026] [auth_basic:error] [pid 1234:tid 1234] [client 185.143.22.10:54322] user admin not found, referer: http://185.143.22.10/admin
         re.compile(r'\[.+\] (\[cgi:error\]) \[.+\] \(2\)(.+:) (\S+), referer: (\S+)'),#[Wed Jun 11 14:00:02.123456 2026] [cgi:error] [pid 1234:tid 1234] (2)Script not found or unable to stat: /usr/lib/cgi-bin/test.cgi, referer: http://185.143.22.10/
-        re.compile(r'\[.+\] (\[.+:error\]) \[.+\] \(2\)(\d+:) \S+, referer: (\S+)'),#[Wed Jun 11 14:00:02.123456 2026] [core:error] [pid 1234:tid 1234] (2)File does not exist: /var/www/html/admin, referer: http://185.143.22.10/
+        re.compile(r'\[.+\] (\[.+:error\]) \[.+\] \(2\)(\d+:) \S+, referer: (\S+)')#[Wed Jun 11 14:00:02.123456 2026] [core:error] [pid 1234:tid 1234] (2)File does not exist: /var/www/html/admin, referer: http://185.143.22.10/
+        ]
     case "4":
         print("You selected nginx_error.log (Nginx)")
-        # Parse Nginx error log for file paths and client IPs
+        compiled_patterns = [
+        re.compile(r'\[.+\] \[error\] \d+#\d+: \*\d+ SSL_do_handshake\(\) failed \(SSL: error:.*?\), client: (\S+)'),# [Wed Jun 11 14:00:05.123456 2026] [error] 1234#1234: *12345 SSL_do_handshake() failed (SSL: error:1408F10B:SSL routines:ssl3_get_record:wrong version number), client: 185.143.22.10
+        re.compile(r'\[.+\] \[error\] \d+#\d+: \*\d+ SSL Proxy requested for unknown host, client: (\S+)'),# [Wed Jun 11 14:00:05.123456 2026] [error] 1234#1234: *12345 SSL Proxy requested for unknown host, client: 185.143.22.10
+        re.compile(r'\[.+\] \[error\] \d+#\d+: \*\d+ user "(\S+)" not found, client: (\S+), server: (\S+), request: "(\S+) (\S+) HTTP/\d\.\d+", host: "(\S+)"'),# [Wed Jun 11 14:00:04.123456 2026] [error] 1234#1234: *12345 user "admin" not found, client: 185.143.22.10, server: example.com, request: "GET /admin HTTP/1.1", host: "185.143.22.10"
+        re.compile(r'\[.+\] \[error\] \d+#\d+: \*\d+ open\(\) "(\S+)" failed \(13: Permission denied\), client: (\S+), server: (\S+), request: "(\S+) (\S+) HTTP/\d\.\d+", host: "(\S+)"'),# [Wed Jun 11 14:00:04.123456 2026] [error] 1234#1234: *12345 open() "/etc/passwd" failed (13: Permission denied), client: 185.143.22.10, server: example.com, request: "GET /../../etc/passwd HTTP/1.1", host: "185.143.22.10"
+        re.compile(r'\[.+\] \[error\] \d+#\d+: \*\d+ open\(\) "(\S+)" failed \(2: No such file or directory\), client: (\S+), server: (\S+), request: "(\S+) (\S+) HTTP/\d\.\d+", host: "(\S+)"'),# [Wed Jun 11 14:00:02.123456 2026] [error] 1234#1234: *12345 open() "/var/www/html/.env" failed (2: No such file or directory), client: 185.143.22.10, server: example.com, request: "GET /.env HTTP/1.1", host: "185.143.22.10"
+        re.compile(r'\[.+\] \[error\] \d+#\d+: \*\d+ directory index of "(\S+)" is forbidden, client: (\S+), server: (\S+), request: "(\S+) (\S+) HTTP/\d\.\d+", host: "(\S+)"'),# [Wed Jun 11 14:00:03.123456 2026] [error] 1234#1234: *12345 directory index of "/var/www/html/admin" is forbidden, client: 185.143.22.10, server: example.com, request: "GET /admin/ HTTP/1.1", host: "185.143.22.10"
+        re.compile(r'\[.+\] \[error\] \d+#\d+: \*\d+ limiting requests, excess: (\d+\.\d+) by zone "(\S+)", client: (\S+), server: (\S+), request: "(\S+) (\S+) HTTP/\d\.\d+", host: "(\S+)"'),# [Wed Jun 11 14:00:03.123456 2026] [error] 1234#1234: *12345 limiting requests, excess: 5.123 by zone "perip", client: 185.143.22.10, server: example.com, request: "GET / HTTP/1.1", host: "185.143.22.10"
+        re.compile(r'\[.+\] \[error\] \d+#\d+: \*\d+ client intended to send too large (?:body|header): (\d+) bytes, client: (\S+), server: (\S+), request: "(\S+) (\S+) HTTP/\d\.\d+", host: "(\S+)"'),# [Wed Jun 11 14:00:03.123456 2026] [error] 1234#1234: *12345 client intended to send too large body: 1073741824 bytes, client: 185.143.22.10, server: example.com, request: "POST /upload HTTP/1.1", host: "185.143.22.10"
+        re.compile(r'\[.+\] \[error\] \d+#\d+: \*\d+ upstream timed out \((\d+: Connection timed out|110: Connection timed out)\) while (?:reading|connecting to) upstream, client: (\S+), server: (\S+), request: "(\S+) (\S+) HTTP/\d\.\d+", upstream: "(\S+)", host: "(\S+)"'),# [Wed Jun 11 14:00:03.123456 2026] [error] 1234#1234: *12345 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 185.143.22.10, server: example.com, request: "GET /api/users HTTP/1.1", upstream: "http://127.0.0.1:9000", host: "185.143.22.10"
+        re.compile(r'\[.+\] \[error\] \d+#\d+: \*\d+ client sent invalid (?:method|header|request) while reading client request line, client: (\S+), server: (\S+), request: "(\S+) (\S+) HTTP/\d\.\d+", host: "(\S+)"'),# [Wed Jun 11 14:00:03.123456 2026] [error] 1234#1234: *12345 client sent invalid method "FOO" while reading client request line, client: 185.143.22.10, server: example.com, request: "FOO / HTTP/1.1", host: "185.143.22.10"
+        re.compile(r'open() "(/S+)" failed ')
+        ]
     case "5":
         print("You selected dhcp.log (DHCP)")
         # Parse DHCP log for IP and MAC addresses
