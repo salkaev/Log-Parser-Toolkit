@@ -4,6 +4,22 @@ import xml.etree.ElementTree as ET
 import json
 import time
 import vt
+import requests
+
+print("Enter your virustotal api key")
+API = input()
+
+def virustotal_api(IP):
+
+    url = f'https://www.virustotal.com/api/v3/ip_addresses/{IP}'
+
+    headers = {
+        'accept': 'application/json',
+        'x-apikey': API
+    }
+    request = requests.get(url, headers=headers)
+    data = request.json()
+    print(data["data"]["attributes"]["last_analysis_stats"])
 
 def parse_log_file(compiled_patterns):
     file_str = []
@@ -30,6 +46,12 @@ def parse_log_file(compiled_patterns):
             pass
     
     filtered = {k: v for k, v in string.items()}
+    for x in filtered:
+         for y in x:
+            pattern_ip = re.compile(r'\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}')
+            match = pattern_ip.search(y)
+            if match != None:
+                virustotal_api(y)
     return filtered
 
 choice = 0
@@ -65,6 +87,7 @@ match choice:
             re.compile(r'Invalid user (\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'), # "Invalid user admin from 185.143.22.10"
             re.compile(r'Accepted password for (\S+) from (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'), # "Accepted password for ilya from 192.168.1.15"
 ]
+        parse_log_file(patterns)
 
     case "2":
         print("You selected access.log (Apache)")
@@ -75,7 +98,7 @@ match choice:
             re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - - \[.+\] "(GET) (\S+) HTTP\S+" (\d{3})'), # 192.168.1.100 - - [10/Oct/2026:13:55:38 +0000] "GET /search.php?q=admin' HTTP/1.1" 500 128
             re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - - \[.+\] "(\S{3,4}) (\S+) HTTP\S+" (\d{3})')# 192.168.2.20 - - [28/Jul/2006:10:27:10 -0300] "GET /cgi-bin/try/ HTTP/1.0" 200 3395
     ]
-        print("You selected access.log (Apache)")
+        parse_log_file(patterns)
     case "3":
         print("You selected error.log (Apache)")
         # Parse Apache error log for errors and IP addresses
@@ -85,6 +108,7 @@ match choice:
             re.compile(r'\[.+\] (\[cgi:error\]) \[.+\] \(2\)(.+:) (\S+), referer: (\S+)'),#[Wed Jun 11 14:00:02.123456 2026] [cgi:error] [pid 1234:tid 1234] (2)Script not found or unable to stat: /usr/lib/cgi-bin/test.cgi, referer: http://185.143.22.10/
             re.compile(r'\[.+\] (\[.+:error\]) \[.+\] \(2\)(\d+:) \S+, referer: (\S+)')#[Wed Jun 11 14:00:02.123456 2026] [core:error] [pid 1234:tid 1234] (2)File does not exist: /var/www/html/admin, referer: http://185.143.22.10/
         ]
+        parse_log_file(patterns)
 
     case "4":
         # Parse Nginx log nginx_error.log
@@ -100,8 +124,9 @@ match choice:
             re.compile(r'\[.+\] \[error\] \d+#\d+: \*\d+ client intended to send too large (?:body|header): (\d+) bytes, client: (\S+), server: (\S+), request: "(\S+) (\S+) HTTP/\d\.\d+", host: "(\S+)"'),# [Wed Jun 11 14:00:03.123456 2026] [error] 1234#1234: *12345 client intended to send too large body: 1073741824 bytes, client: 185.143.22.10, server: example.com, request: "POST /upload HTTP/1.1", host: "185.143.22.10"
             re.compile(r'\[.+\] \[error\] \d+#\d+: \*\d+ upstream timed out \((\d+: Connection timed out|110: Connection timed out)\) while (?:reading|connecting to) upstream, client: (\S+), server: (\S+), request: "(\S+) (\S+) HTTP/\d\.\d+", upstream: "(\S+)", host: "(\S+)"'),# [Wed Jun 11 14:00:03.123456 2026] [error] 1234#1234: *12345 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 185.143.22.10, server: example.com, request: "GET /api/users HTTP/1.1", upstream: "http://127.0.0.1:9000", host: "185.143.22.10"
             re.compile(r'\[.+\] \[error\] \d+#\d+: \*\d+ client sent invalid (?:method|header|request) while reading client request line, client: (\S+), server: (\S+), request: "(\S+) (\S+) HTTP/\d\.\d+", host: "(\S+)"'),# [Wed Jun 11 14:00:03.123456 2026] [error] 1234#1234: *12345 client sent invalid method "FOO" while reading client request line, client: 185.143.22.10, server: example.com, request: "FOO / HTTP/1.1", host: "185.143.22.10"
-        re.compile(r'open() "(/S+)" failed ')
+            re.compile(r'open() "(/S+)" failed ')
         ]
+        parse_log_file(patterns)
 
     case "5":
         # Parse DHCP log for IP and MAC addresses
@@ -134,6 +159,8 @@ match choice:
             # Jun 18 14:00:05 dhcpd: possible DHCP starvation attack from MAC 00:11:22:33:44:55 (1000 requests in 10 seconds)
             re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ dhcpd: possible DHCP starvation attack from MAC (\S+) \(\d+ requests in \d+ seconds\)'),# [Jun 18 14:00:05] dhcpd: possible DHCP starvation attack from MAC 00:11:22:33:44:55 (1000 requests in 10 seconds)
 ]
+        parse_log_file(patterns)
+
     case "6":
         # Parse dns.log
         print("You selected dns.log (DNS)")
@@ -183,6 +210,8 @@ match choice:
             # Jun 18 14:00:05 named[12345]: client 185.143.22.10#54321: query: example.com IN SRV + (192.168.1.1)
         re.compile(r'\S+ \d+ \d+:\d+:\d+ \S+ named\[\d+\]: client (\S+)#\d+: query: \S+ IN SRV \+ \(\S+\)'),# [Jun 18 14:00:05] named[12345]: client 185.143.22.10#54321: query: example.com IN SRV + (192.168.1.1)
 ]
+        parse_log_file(patterns)
+
     case "7":
         # Parse Squid proxy log for source/destination IPs and ports
         print("You selected squid.log (Squid Proxy)")
@@ -220,6 +249,8 @@ match choice:
             # Jun 18 14:00:05.123 12345 192.168.1.100 TCP_MISS/200 0 CONNECT https://example.com - HIER_DIRECT/192.168.1.1 text/html
             re.compile(r'\S+ \d+ \d+:\d+:\d+\.\d+ \d+ (\S+) TCP_MISS/\d+ \d+ \S+ https://(\S+)(?::\d+)?'),# [Jun 18 14:00:05.123 12345] 192.168.1.100 TCP_MISS/200 0 CONNECT https://example.com - HIER_DIRECT/192.168.1.1 text/html
         ]
+        parse_log_file(patterns)
+
     case "8":
         print("You selected firewall.log (Windows Firewall)")
         # Parse Windows Firewall log for actions, protocols, IPs and ports
