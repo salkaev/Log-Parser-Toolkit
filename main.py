@@ -5,11 +5,27 @@ import json
 import time
 import vt
 import requests
+import keyring
 
-print("Enter your virustotal api key")
-API = input()
+def get_api_key():
+    SERVICE_NAME = "Log-Parser-Toolkit"
+    KEY_NAME = "virustotal_api_key"
+
+    api_key = keyring.get_password(SERVICE_NAME, KEY_NAME)
+
+    if api_key is None:
+        print("Enter your VirusTotal API key:")
+        api_key = input().strip()
+
+        keyring.set_password(SERVICE_NAME, KEY_NAME, api_key)
+        print("Key saved! You won't need to enter it next time.")
+    else:
+        print("Key loaded from storage")
+
+    return api_key
 
 def virustotal_api(IP):
+    API=get_api_key()
 
     url = f'https://www.virustotal.com/api/v3/ip_addresses/{IP}'
 
